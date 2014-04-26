@@ -1,9 +1,12 @@
 var express = require('express');
+
 var redis = require("redis");
-var db = redis.createClient();
+var db = require('redis-url').connect(process.env.REDISTOGO_URL) || redis.createClient();
+
 var path = require('path');
 var favicon = require('static-favicon');
 var logger = require('morgan');
+
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
