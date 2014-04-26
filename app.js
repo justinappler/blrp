@@ -26,15 +26,6 @@ app.use(bodyParser.urlencoded());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-/// my middleware
-app.use(function(req, res, next) {
-    db.get('foo', function(err, value) {
-       if (err) return next(err);
-       req.foo = value || 'empty';
-       next();
-    }); 
-});
-
 app.use('/', routes);
 app.use('/blurp', blurp);
 

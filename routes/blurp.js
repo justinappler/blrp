@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var amqp = require('amqp');
-var exchange, mq;
+var ex;
 
 // Get the URL from ENV or default to localhost
 var url = process.env.CLOUDAMQP_URL || "amqp://localhost";
@@ -15,13 +15,7 @@ var conn = amqp.createConnection({ url: url }, {
 
 // When connected..
 conn.on('ready', function () {
-  // declare the default exchange
-  exchange = conn.exchange('');
-
-  // create a queue
-  conn.queue('queue1', { durable: true }, function(queue) { 
-      mq = queue;
-  });
+  ex = conn.exchange('blurps', { confirm: true, type: 'direct', autoDelete: false });
 });
 
 /* GET blurp listing. */
@@ -30,9 +24,10 @@ router.get('/', function(req, res) {
 });
 
 /* GET blurp name . */
-router.get('/:name', function(req, res) {
-    exchange.publish(mq.name, { body: req.params.name });
-    res.send('blurped: ' + req.params.name);
+router.post('/', function(req, res) {
+    ex.publish('incomingBlurps', { body: req.body.blurpText }, {}, function(err) {
+        res.render('index', { blurpText: req.body.blurpText });
+    });
 });
 
 module.exports = router;

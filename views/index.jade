@@ -1,5 +1,10 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+  h1= Blurp
+  p Welcome to Blurp
+  if (blurpText)
+    h2 Blurped #{blurpText}
+  form(action='/blurp', method='post')
+    input(type='text', name='blurpText', value=blurpText)
+    input(type='submit', value='Send a blurp')

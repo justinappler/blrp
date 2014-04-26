@@ -12,14 +12,13 @@ var conn = amqp.createConnection({ url: url }, {
 
 // When connected..
 conn.on('ready', function () {
-  // declare the default exchange
-  var exchange = conn.exchange('');
-
-  // create a queue
-  conn.queue('queue1', { durable: true }, function(queue) { 
-    // subscribe to that queue
-    queue.subscribe(function(msg) {
-      console.log(msg.body);
-    });
+  conn.exchange('blurps', { confirm: true, type: 'direct', autoDelete: false }, function (exchange) {
+      // create a queue
+      conn.queue('incomingBlurps', { durable: true }, function(queue) { 
+          queue.bind(exchange, 'incomingBlurps');
+          queue.subscribe(function(msg) {
+              console.log('Processed a blurp: ' + msg.body);
+          });
+      });
   });
 });
