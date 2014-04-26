@@ -1,1 +1,2 @@
-web: node web.js
+web: node bin/www
+#worker: node worker.js
