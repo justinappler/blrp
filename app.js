@@ -22,9 +22,11 @@ passport.deserializeUser(function(id, done) {
   });
 });
 
+var host = process.env.HOST || 'http://localhost:5000/';
+
 passport.use(new GoogleStrategy({
-        returnURL: 'http://localhost:5000/auth/google/return',
-        realm: 'http://localhost:5000/'
+        returnURL: host + 'auth/google/return',
+        realm: host
   },
   function(identifier, profile, done) {
       profile.identifier = identifier;
