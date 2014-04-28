@@ -1,5 +1,9 @@
 var express = require('express');
+var session = require('express-session');
 var router = express.Router();
+var passport = require('passport');
+var redis = require("redis");
+var db = require('redis-url').connect(process.env.REDISTOGO_URL) || redis.createClient();
 var amqp = require('amqp');
 var ex;
 
@@ -19,15 +23,37 @@ conn.on('ready', function () {
 });
 
 /* GET blurp listing. */
-router.get('/', function(req, res) {
-    res.send('blurp a string');
+router.get('/', ensureAuthenticated, getSubs, function(req, res) {
+    res.render('blurp', { user : req.user, subs : req.subs })
 });
 
 /* GET blurp name . */
-router.post('/', function(req, res) {
-    ex.publish('incomingBlurps', { body: req.body.blurpText }, {}, function(err) {
-        res.render('index', { blurpText: req.body.blurpText });
+router.post('/', ensureAuthenticated, getSubs, function(req, res) {
+    if (req.body.blurpSubscribe) {
+        db.sadd('topic#' + req.body.blurpSubscribe, req.user.id);
+        db.sadd(req.user.id + '#subs', req.body.blurpSubscribe);
+    }
+    
+    db.smembers(req.user.id + "#subs", function(err, subs) {
+       res.render('blurp', { user : req.user, subs: subs });
     });
+    // ex.publish('incomingBlurps', { body: req.body.blurpText }, {}, function(err) {
+    //         res.render('blurp', { user : req.user, blurpText: req.body.blurpText });
+    //     });
 });
+
+function ensureAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) { 
+      return next(); 
+  }
+  res.redirect('/');
+}
+
+function getSubs(req, res, next) {
+    db.smembers(req.user.id + "#subs", function(err, subs) {
+       req.subs = subs || [];
+       next();
+    });
+}
 
 module.exports = router;

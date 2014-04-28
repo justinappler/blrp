@@ -1,0 +1,18 @@
+extends layout
+
+block content
+  h1= Blurp
+  p Welcome to Blurp
+  p Logged in as #{user.displayName} 
+  a(href='/logout') Logout
+  if (blurpSubscribe)
+    h2 Subscribed to #{blurpSubscribe}
+  form(action='/blurp', method='post')
+    input(type='text', name='blurpSubscribe')
+    input(type='submit', value='Subscribe to topic blurps')
+  h3 subscriptions
+  ul
+    for sub in subs
+      li= sub
+    else
+      li sorry, no subscriptions!
