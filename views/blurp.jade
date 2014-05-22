@@ -3,13 +3,19 @@ extends layout
 block content
   h1= Blurp
   p Welcome to Blurp
-  p Logged in as #{user.displayName} 
+  p Logged in as #{user.name}
   a(href='/logout') Logout
   if (blurpSubscribe)
     h2 Subscribed to #{blurpSubscribe}
   form(action='/blurp', method='post')
     input(type='text', name='blurpSubscribe')
     input(type='submit', value='Subscribe to topic blurps')
+  h3 friends
+  ul
+    for friend in user.friends
+      li= friend.name
+    else
+      li sorry, no friends!
   h3 subscriptions
   ul
     for sub in subs

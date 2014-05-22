@@ -19,6 +19,9 @@
     "amqp": "https://github.com/postwait/node-amqp/tarball/master",
     "passport": "^0.2.0",
     "passport-google": "^0.3.0",
-    "connect-redis": "^2.0.0"
+    "connect-redis": "^2.0.0",
+    "q": "^1.0.1",
+    "mongoose": "^3.8.10",
+    "connect-mongo": "^0.4.1"
   }
 }

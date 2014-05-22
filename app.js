@@ -1,47 +1,45 @@
 var express = require('express');
-var cookieParser = require('cookie-parser')
+var cookieParser = require('cookie-parser');
+var bodyParser = require('body-parser');
 var session = require('express-session');
-var RedisStore = require('connect-redis')(session);
 var util = require('util');
 
-var redis = require("redis");
-var db = require('redis-url').connect(process.env.REDISTOGO_URL) || redis.createClient();
+var mongoose = require('mongoose');
+var mongoUri = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || 'mongodb://localhost/blurp';
+mongoose.connect(mongoUri);
 
-var users = require('./lib/users');
-
+var User = require('./lib/user');
+var MongoStore = require('connect-mongo')(session);
 var passport = require('passport');
 var GoogleStrategy = require('passport-google').Strategy;
 
 passport.serializeUser(function(user, done) {
-    done(null, user.id);
+  done(null, user.id);
 });
 
 passport.deserializeUser(function(id, done) {
-  users.findById(id, function(err, user) {
-      done(err, user);
+  User.findById(id, function(err, user) {
+    done(err, user);
   });
 });
 
 var host = process.env.HOST || 'http://localhost:5000/';
 
 passport.use(new GoogleStrategy({
-        returnURL: host + 'auth/google/return',
-        realm: host
+    returnURL: host + 'auth/google/return',
+    realm: host
   },
   function(identifier, profile, done) {
-      profile.identifier = identifier;
-      users.findOrCreate(profile, function(err, user) {
-         done(err, user); 
-      });
+    profile.identifier = identifier;
+    User.findOrCreate(profile, function(err, user) {
+       done(err, user);
+    });
   }
 ));
 
 var path = require('path');
 var favicon = require('static-favicon');
 var logger = require('morgan');
-
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
 
 var routes = require('./routes/index');
 var blurp = require('./routes/blurp');
@@ -57,7 +55,7 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(cookieParser());
-app.use(session({ store: new RedisStore({client: db}), secret: 'keyboard cat' }));
+app.use(session({ store: new MongoStore({db: 'blurp'}), secret: 'keyboard cat' }));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.static(path.join(__dirname, 'public')));
@@ -71,7 +69,7 @@ app.use('/', routes);
 app.use('/blurp', blurp);
 
 app.get('/auth/google', passport.authenticate('google'));
-app.get('/auth/google/return', 
+app.get('/auth/google/return',
   passport.authenticate('google', { successRedirect: '/blurp',
                                     failureRedirect: '/' }));
 
