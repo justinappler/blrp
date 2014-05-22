@@ -1,24 +1,26 @@
 extends layout
 
 block content
-  h1= Blurp
-  p Welcome to Blurp
-  p Logged in as #{user.name}
-  a(href='/logout') Logout
-  if (blurpSubscribe)
-    h2 Subscribed to #{blurpSubscribe}
-  form(action='/blurp', method='post')
-    input(type='text', name='blurpSubscribe')
-    input(type='submit', value='Subscribe to topic blurps')
-  h3 friends
-  ul
-    for friend in user.friends
-      li= friend.name
-    else
-      li sorry, no friends!
-  h3 subscriptions
-  ul
-    for sub in subs
-      li= sub
-    else
-      li sorry, no subscriptions!
+  div(class='row-fluid marketing')
+      div(class='span6')
+        if (blurpSubscribe)
+          h2 Subscribed to #{blurpSubscribe}
+        include includes/blurpRequest.jade
+      div(class='span6')
+        h4 friends
+        ul
+          for friend in user.friends
+            li
+              p= friend.name
+          else
+            li
+              p you should be nicer to people
+      div(class='span6')
+        h4 blurp requests
+        ul
+          for req in blurpReqs
+            li
+              p= req
+          else
+            li
+              p no existing blurp requests

@@ -1,0 +1,8 @@
+ul(class='nav nav-pills pull-right')
+  if (user)
+    li
+      a(href='/profile') #{user.name}
+    li
+      a(href='/logout') Logout
+  else
+    include gsignin.jade

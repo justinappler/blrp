@@ -1,0 +1,12 @@
+h4 New Blurp Request
+form(action='/blurp', method='post')
+  div.form-group
+    label(for='blurp-message') Message:
+    input.form-control(id='blurp-message', type='text', name='message', placeholder='Blurp me when you get home')
+  div.form-group
+    label(for='blurp-to') From:
+    select.form-control(id='blurp-to', name='to')
+      each friend in user.friends
+        option(value=friend._id)= friend.name
+  div.form-group
+    button(type='submit', class='btn btn-default') Request a Blurp

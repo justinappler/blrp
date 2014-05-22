@@ -2,6 +2,15 @@ doctype html
 html
   head
     title= title
-    link(rel='stylesheet', href='/stylesheets/style.css')
+    link(rel='stylesheet', href='/stylesheets/bootstrap.css')
+    link(rel='stylesheet', href='/stylesheets/bootstrap-marketing.css')
+    link(rel='stylesheet', href='/stylesheets/bootstrap-responsive.css')
+    script(src='//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js')
   body
-    block content
+
+  div(class='container-narrow')
+      include includes/header
+      hr
+      block content
+      hr
+      include includes/footer

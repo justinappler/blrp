@@ -1,6 +1,12 @@
 extends layout
 
 block content
-  h1= Blurp
-  p Welcome to Blurp
-  a(href='/auth/google') Sign in with Google
+  div(class='jumbotron')
+    h1 Blurp
+    p(class='lead') So you know when shit happens.
+    script(type='text/javascript').
+      (function() {
+        var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+        po.src = 'https://apis.google.com/js/client:plusone.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+      })();

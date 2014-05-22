@@ -11,7 +11,7 @@ mongoose.connect(mongoUri);
 var User = require('./lib/user');
 var MongoStore = require('connect-mongo')(session);
 var passport = require('passport');
-var GoogleStrategy = require('passport-google').Strategy;
+var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 
 passport.serializeUser(function(user, done) {
   done(null, user.id);
@@ -26,11 +26,12 @@ passport.deserializeUser(function(id, done) {
 var host = process.env.HOST || 'http://localhost:5000/';
 
 passport.use(new GoogleStrategy({
-    returnURL: host + 'auth/google/return',
-    realm: host
+    clientID: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    callbackURL: host + 'auth/google/callback',
   },
-  function(identifier, profile, done) {
-    profile.identifier = identifier;
+  function(token, refreshToken, profile, done) {
+    profile.token = token;
     User.findOrCreate(profile, function(err, user) {
        done(err, user);
     });
@@ -56,7 +57,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(cookieParser());
 app.use(session({
-  store: new MongoStore({db: 'blurp', mongoose_connection: mongoose.connection}), 
+  store: new MongoStore({db: 'blurp', mongoose_connection: mongoose.connection}),
   secret: 'keyboard cat'
 }));
 app.use(passport.initialize());
@@ -71,8 +72,8 @@ app.get('/logout', function(req, res){
 app.use('/', routes);
 app.use('/blurp', blurp);
 
-app.get('/auth/google', passport.authenticate('google'));
-app.get('/auth/google/return',
+app.get('/auth/google', passport.authenticate('google', {scope: ['profile', 'email']}));
+app.get('/auth/google/callback',
   passport.authenticate('google', { successRedirect: '/blurp',
                                     failureRedirect: '/' }));
 

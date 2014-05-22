@@ -24,16 +24,17 @@ conn.on('ready', function () {
 });
 
 /* GET blurp listing. */
-router.get('/', ensureAuthenticated, getSubs, getFriends, function(req, res) {
-    res.render('blurp', { user : req.user, subs : req.subs })
+router.get('/', ensureAuthenticated, getReqs, getFriends, function(req, res) {
+    res.render('blurp', { user : req.user, blurpReqs : req.blurpReqs })
 });
 
 /* GET blurp name . */
-router.post('/', ensureAuthenticated, getSubs, getFriends, function(req, res) {
-    if (req.body.blurpSubscribe) {
+router.post('/', ensureAuthenticated, getReqs, getFriends, function(req, res) {
+    if (req.body.message) {
+      req.blurpReqs = ["'" + req.body.message + "' from " + req.body.to];
     }
 
-    res.render('blurp', { user : req.user, subs: subs });
+    res.render('blurp', { user : req.user, blurpReqs: req.blurpReqs });
     // ex.publish('incomingBlurps', { body: req.body.blurpText }, {}, function(err) {
     //         res.render('blurp', { user : req.user, blurpText: req.body.blurpText });
     //     });
@@ -47,8 +48,8 @@ function ensureAuthenticated(req, res, next) {
   res.redirect('/');
 }
 
-function getSubs(req, res, next) {
-  req.subs = [];
+function getReqs(req, res, next) {
+  req.blurpReqs = [];
   next();
 }
 
