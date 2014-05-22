@@ -13,9 +13,9 @@ router.post('/', auth.isAuthenticated, function(req, res) {
       BlurpRequest.createRequest(
         req.user,
         req.body.to,
-        req.body.message,
-        function createFinished(err, br) {
-          res.redirect('/home');
+        req.body.message)
+      .then(function createFinished(br) {
+        res.redirect('/home');
       });
     }
 });

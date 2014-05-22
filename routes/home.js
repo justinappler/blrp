@@ -4,23 +4,28 @@ var router = express.Router();
 var passport = require('passport');
 var amqp = require('amqp');
 var auth = require('../lib/auth');
+var Q = require('q');
 
 var BlurpRequest = require('../lib/blurpRequest');
 
 /* GET user home */
-router.get('/', auth.isAuthenticated, getReqs, getFriends, function(req, res) {
+router.get('/', auth.isAuthenticated, getBlurps, getFriends, function(req, res) {
     res.render('home', {
       user : req.user,
-      blurpReqs : req.blurpReqs
+      blurps : req.blurps || [],
+      blurpReqs : req.blurpReqs || [],
     });
 });
 
-function getReqs(req, res, next) {
-  BlurpRequest.allRequestsByUser(req.user, function (err, reqs) {
-    if (err) {
-      next();
-    }
-    req.blurpReqs = reqs;
+function getBlurps(req, res, next) {
+  Q.all(
+    [BlurpRequest.allRequestsByUser(req.user),
+     BlurpRequest.allRequestsForUser(req.user)]
+  )
+  .then(function (reqs) {
+    console.log(reqs);
+    req.blurpReqs = reqs[0];
+    req.blurps = reqs[1];
     next();
   });
 }
