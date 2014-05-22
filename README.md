@@ -21,7 +21,7 @@ foreman start
 Justin Appler: [@justinappler][twitter] [LinkedIn][linkedin]
 
 ## License
-Licensed under [MIT][mit].
+For the moment, Copyright 2014 Justin Appler, All rights reserved.
 
 [linkedin]: http://www.linkedin.com/in/justinappler
 [demo]: https://blurp.herokuapp.com/
