@@ -20,7 +20,11 @@ block content
         ul
           for req in blurpReqs
             li
-              p= req
+              p
+                |[
+                a(href='/blurpRequest/delete/' + req._id)  x
+                |  ]
+                | To: #{req.targetUser.name}, Message: #{req.text}
           else
             li
               p no existing blurp requests

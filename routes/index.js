@@ -8,8 +8,8 @@ router.get('/', redirectIfAuthed, function(req, res) {
 });
 
 function redirectIfAuthed(req, res, next) {
-  if (req.isAuthenticated()) { 
-      res.redirect('/blurp'); 
+  if (req.isAuthenticated()) {
+      res.redirect('/home'); 
   }
   next();
 }

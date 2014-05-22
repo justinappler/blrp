@@ -43,7 +43,8 @@ var favicon = require('static-favicon');
 var logger = require('morgan');
 
 var routes = require('./routes/index');
-var blurp = require('./routes/blurp');
+var home = require('./routes/home');
+var blurpRequest = require('./routes/blurpRequest');
 
 var app = express();
 
@@ -70,11 +71,12 @@ app.get('/logout', function(req, res){
 });
 
 app.use('/', routes);
-app.use('/blurp', blurp);
+app.use('/home', home);
+app.use('/blurpRequest', blurpRequest);
 
 app.get('/auth/google', passport.authenticate('google', {scope: ['profile', 'email']}));
 app.get('/auth/google/callback',
-  passport.authenticate('google', { successRedirect: '/blurp',
+  passport.authenticate('google', { successRedirect: '/home',
                                     failureRedirect: '/' }));
 
 /// catch 404 and forwarding to error handler
