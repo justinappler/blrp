@@ -31,7 +31,7 @@ function getBlurps(req, res, next) {
 
 function getFriends(req, res, next) {
   User.populateFriends(req.user, function gotFriends(err, friends) {
-    req.user.friends = friends;
+    req.user.friends = friends || [];
     next();
   });
 }
