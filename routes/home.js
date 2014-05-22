@@ -26,8 +26,8 @@ function getReqs(req, res, next) {
 }
 
 function getFriends(req, res, next) {
-  User.populateFriends(req.user, function gotFriends(err, user) {
-    req.user = user;
+  User.populateFriends(req.user, function gotFriends(err, friends) {
+    req.user.friends = friends;
     next();
   });
 }
