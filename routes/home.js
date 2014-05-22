@@ -23,7 +23,6 @@ function getBlurps(req, res, next) {
      BlurpRequest.allRequestsForUser(req.user)]
   )
   .then(function (reqs) {
-    console.log(reqs);
     req.blurpReqs = reqs[0];
     req.blurps = reqs[1];
     next();
