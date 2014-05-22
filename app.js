@@ -55,7 +55,10 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(cookieParser());
-app.use(session({ store: new MongoStore({db: 'blurp'}), secret: 'keyboard cat' }));
+app.use(session({
+  store: new MongoStore({db: 'blurp', mongoose_connection: mongoose.connection}), 
+  secret: 'keyboard cat'
+}));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.static(path.join(__dirname, 'public')));
