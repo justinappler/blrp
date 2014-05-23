@@ -1,20 +1,21 @@
 li
-  span(id='signinButton')
-    span(class='g-signin'
-         data-callback='signinCallback'
-         data-clientid='1042953377227-sod02oaepmklmlsat2jvbpvlcmb1vm8e.apps.googleusercontent.com'
-         data-cookiepolicy='single_host_origin'
-         data-scope='profile')
-  script(type='text/javascript').
-    var signinClicked = false;
-    function signinCallback(authResult) {
-      if (signinClicked && authResult['status']['signed_in']) {
-        document.location = '/auth/google';
+  div#signin
+    span(id='signinButton')
+      span(class='g-signin'
+           data-callback='signinCallback'
+           data-clientid='1042953377227-sod02oaepmklmlsat2jvbpvlcmb1vm8e.apps.googleusercontent.com'
+           data-cookiepolicy='single_host_origin'
+           data-scope='profile')
+    script(type='text/javascript').
+      var signinClicked = false;
+      function signinCallback(authResult) {
+        if (signinClicked && authResult['status']['signed_in']) {
+          document.location = '/auth/google';
+        }
       }
-    }
 
-    $(document).ready(function (){
-      $(document).on('click', '#signinButton button', function() {
-        signinClicked = true;
-      })
-    });
+      $(document).ready(function (){
+        $(document).on('click', '#signinButton button', function() {
+          signinClicked = true;
+        })
+      });

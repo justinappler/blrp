@@ -40,3 +40,27 @@ img.profile {
   border-radius: 15px;
   margin: 2px 6px 2px 2px;
 }
+
+a.logo {
+  float: left;
+  line-height: 34px;
+}
+
+img.logo {
+  width: 30px;
+  height: 30px;
+  margin-right: 10px;
+}
+
+.logo h3 {
+  line-height: 36px;
+}
+
+h3 a, h3 a:active, h3 a:hover, h3 a:visited {
+  color: inherit;
+  text-decoration: none;
+}
+
+#signin {
+  margin-top: 5px;
+}

@@ -3,15 +3,8 @@ var router = express.Router();
 var util = require('util');
 
 /* GET home page. */
-router.get('/', redirectIfAuthed, function(req, res) {
-    res.render('index');
+router.get('/', function(req, res) {
+    res.render('index', {user: req.user});
 });
-
-function redirectIfAuthed(req, res, next) {
-  if (req.isAuthenticated()) {
-      res.redirect('/home'); 
-  }
-  next();
-}
 
 module.exports = router;
