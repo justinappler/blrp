@@ -1,19 +1,7 @@
 extends layout
 
 block content
-  div
-    h2 blurps
-    table(class="table table-condensed")
-      thead
-        th from
-        th message
-        th actions
-      for blurp in blurps
-        tr
-          td= blurp.creator.name
-          td= blurp.text
-          td
-            a(href="#") Blurp
+  include includes/blurps.jade
   hr
   div(class='row-fluid marketing')
       div(class='span6')
@@ -21,7 +9,7 @@ block content
           h2 Subscribed to #{blurpSubscribe}
         include includes/blurpRequest.jade
       div(class='span6')
-        h4 friends
+        h4 google+ friends
         ul
           for friend in user.friends
             li

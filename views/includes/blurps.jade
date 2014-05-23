@@ -1,0 +1,13 @@
+div
+  h2 blurps
+  table(class="table table-condensed")
+    thead
+      th from
+      th message
+      th actions
+    for blurp in blurps
+      tr
+        td= blurp.creator.name
+        td= blurp.text
+        td
+          a(href="#") Blurp
