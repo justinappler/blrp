@@ -60,7 +60,7 @@ app.use(bodyParser.urlencoded());
 app.use(cookieParser());
 app.use(session({
   store: new MongoStore({db: 'blurp', mongoose_connection: mongoose.connection}),
-  secret: 'keyboard cat'
+  secret: process.env.SESSION_SECRET || 'keyboard cat'
 }));
 app.use(passport.initialize());
 app.use(passport.session());

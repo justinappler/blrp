@@ -1,7 +1,7 @@
 Blurp
 =====================================
-This repository contains the backend for Blurp, a
-simple application for communicating events with
+This repository contains the backend for Blrp.me, an
+application for communicating simple events with
 the people you know.
 
 ## Usage
@@ -24,7 +24,7 @@ Justin Appler: [@justinappler][twitter] [LinkedIn][linkedin]
 For the moment, Copyright 2014 Justin Appler, All rights reserved.
 
 [linkedin]: http://www.linkedin.com/in/justinappler
-[demo]: https://blurp.herokuapp.com/
+[demo]: https://blrp.me/
 [twitter]: http://twitter.com/justinappler
 [mit]: http://www.opensource.org/licenses/mit-license.php
 [nodejs]: http://nodejs.org/
