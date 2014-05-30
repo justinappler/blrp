@@ -53,7 +53,9 @@ app.set('view engine', 'jade');
 
 // force ssl
 if (app.get('env') !== 'development') {
+    console.log('forcing ssl');
     app.use(function forceSSL(err, req, res, next) {
+        console.log(req.header('x-forwarded-proto'));
         if (req.header('x-forwarded-proto') != 'https') {
           res.redirect('https://' + req.header('host') + req.url);
         } else {
