@@ -1,18 +1,28 @@
 var express = require('express');
+var app = express();
+
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session');
 var util = require('util');
+var path = require('path');
+var favicon = require('static-favicon');
+var logger = require('morgan');
 
 var mongoose = require('mongoose');
 var mongoUri = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || 'mongodb://localhost/blurp';
 mongoose.connect(mongoUri);
+var MongoStore = require('connect-mongo')(session);
 
 var User = require('./lib/user');
-var MongoStore = require('connect-mongo')(session);
+
 var passport = require('passport');
 var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+var host = process.env.HOST || 'http://localhost:5000/';
 
+
+
+// passport configuration
 passport.serializeUser(function(user, done) {
   done(null, user.id);
 });
@@ -22,8 +32,6 @@ passport.deserializeUser(function(id, done) {
     done(err, user);
   });
 });
-
-var host = process.env.HOST || 'http://localhost:5000/';
 
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
@@ -39,19 +47,20 @@ passport.use(new GoogleStrategy({
   }
 ));
 
-var path = require('path');
-var favicon = require('static-favicon');
-var logger = require('morgan');
-
-var routes = require('./routes/index');
-var home = require('./routes/home');
-var blurpRequest = require('./routes/blurpRequest');
-
-var app = express();
-
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
+
+// force ssl
+if (app.get('env') !== 'development') {
+    app.use(function forceSSL(err, req, res, next) {
+        if (req.header('x-forwarded-proto') != 'https') {
+          res.redirect('https://' + req.header('host') + req.url);
+        } else {
+          next();
+        }
+    });
+}
 
 app.use(favicon(__dirname + '/public/images/favicon.ico'));
 app.use(logger('dev'));
@@ -66,15 +75,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.get('/logout', function(req, res){
-  req.logout();
-  res.redirect('/');
-});
-
-app.use('/', routes);
-app.use('/home', home);
-app.use('/blurpRequest', blurpRequest);
-
+// auth middleware
 app.get('/auth/google', passport.authenticate('google', {
   scope: ['https://www.googleapis.com/auth/plus.login', 'email']
 }));
@@ -82,6 +83,20 @@ app.get('/auth/google', passport.authenticate('google', {
 app.get('/auth/google/callback',
   passport.authenticate('google', { successRedirect: '/home',
                                     failureRedirect: '/' }));
+
+app.get('/logout', function(req, res){
+  req.logout();
+  res.redirect('/');
+});
+
+// route setup
+var index = require('./routes/index');
+var home = require('./routes/home');
+var blurpRequest = require('./routes/blurpRequest');
+
+app.use('/', index);
+app.use('/home', home);
+app.use('/blurpRequest', blurpRequest);
 
 /// catch 404 and forwarding to error handler
 app.use(function(req, res, next) {
