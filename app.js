@@ -1,13 +1,13 @@
 var express = require('express');
 var app = express();
 
+var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session');
 var util = require('util');
 var path = require('path');
 var favicon = require('static-favicon');
-var logger = require('morgan');
 
 var mongoose = require('mongoose');
 var mongoUri = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || 'mongodb://localhost/blurp';
@@ -19,8 +19,6 @@ var User = require('./lib/user');
 var passport = require('passport');
 var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 var host = process.env.HOST || 'http://localhost:5000/';
-
-
 
 // passport configuration
 passport.serializeUser(function(user, done) {
@@ -50,22 +48,22 @@ passport.use(new GoogleStrategy({
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
+app.set('trust proxy', true);
+
+app.use(logger('dev'));
 
 // force ssl
-if (app.get('env') !== 'development') {
-    console.log('forcing ssl');
-    app.use(function forceSSL(err, req, res, next) {
-        console.log(req.header('x-forwarded-proto'));
-        if (req.header('x-forwarded-proto') != 'https') {
-          res.redirect('https://' + req.header('host') + req.url);
-        } else {
-          next();
-        }
-    });
+if (app.get('env') === 'production') {
+  app.use(function forceSSL(req, res, next) {
+      if (req.protocol != 'https') {
+        res.redirect('https://' + req.host + req.url);
+      } else {
+        next();
+      }
+  });
 }
 
 app.use(favicon(__dirname + '/public/images/favicon.ico'));
-app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(cookieParser());
