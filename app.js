@@ -36,8 +36,8 @@ passport.use(new GoogleStrategy({
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     callbackURL: host + 'auth/google/callback',
   },
-  function(token, refreshToken, profile, done) {
-    profile.token = token;
+  function(accessToken, refreshToken, profile, done) {
+    profile.accessToken = accessToken;
     profile.refreshToken = refreshToken;
     User.findOrCreate(profile, function(err, user) {
        done(err, user);
