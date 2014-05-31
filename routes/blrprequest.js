@@ -5,12 +5,15 @@ var passport = require('passport');
 var amqp = require('amqp');
 var auth = require('../lib/auth');
 
-var BlurpRequest = require('../lib/blurpRequest');
+var BlrpRequest = require('../lib/blrprequest');
 
-/* POST blurp request */
-router.post('/', auth.isAuthenticated, function(req, res) {
+// Auth all requests
+router.use(auth.isAuthenticated);
+
+// POST blrp request
+router.post('/', function(req, res) {
     if (req.body.message && req.body.to) {
-      BlurpRequest.createRequest(
+      BlrpRequest.createRequest(
         req.user,
         req.body.to,
         req.body.message)
@@ -20,8 +23,9 @@ router.post('/', auth.isAuthenticated, function(req, res) {
     }
 });
 
-router.get('/delete/:id', auth.isAuthenticated, function(req, res) {
-  BlurpRequest.remove({_id: req.params.id, creator: req.user.id}, function (err) {
+// GET delete blrp request
+router.get('/delete/:id', function(req, res) {
+  BlrpRequest.remove({_id: req.params.id, creator: req.user.id}, function (err) {
     res.redirect('/home');
   });
 });

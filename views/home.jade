@@ -1,30 +1,21 @@
 extends layout
 
 block content
-  include includes/blurps.jade
+  include includes/blrps.jade
   hr
   div(class='row-fluid marketing')
       div(class='span6')
-        if (blurpSubscribe)
-          h2 Subscribed to #{blurpSubscribe}
-        include includes/blurpRequest.jade
-      div(class='span6')
-        h4 google+ friends
-        ul
-          for friend in user.friends
-            li
-              p= friend.name
-          else
-            li
-              p you should be nicer to people
+        if (blrpSubscribe)
+          h2 Subscribed to #{blrpSubscribe}
+        include includes/blrprequest.jade
       div(class='span6')
         h4 blrp requests
         ul
-          for req in blurpReqs
+          for req in blrrpReqs
             li
               p
                 |[
-                a(href='/blurpRequest/delete/' + req._id)  x
+                a(href='/blrprequest/delete/' + req._id)  x
                 |  ]
                 | To: #{req.targetUser.name}, Message: #{req.text}
           else

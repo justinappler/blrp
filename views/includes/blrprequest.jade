@@ -1,0 +1,12 @@
+h4 New Blrp Request
+form(action='/blrprequest', method='post')
+  div.form-group
+    label(for='blrp-message') Message:
+    input.form-control(id='blrp-message', type='text', name='message', placeholder='Blrp me when you get home')
+  div.form-group
+    label(for='blrp-to') From:
+    select.form-control(id='blrp-to', name='to')
+      each friend in user.friends
+        option(value=friend._id)= friend.name
+  div.form-group
+    button(type='submit', class='btn btn-default') Request a Blrp

@@ -10,7 +10,7 @@ var path = require('path');
 var favicon = require('static-favicon');
 
 var mongoose = require('mongoose');
-var mongoUri = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || 'mongodb://localhost/blurp';
+var mongoUri = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || 'mongodb://localhost/blrp';
 mongoose.connect(mongoUri);
 var MongoStore = require('connect-mongo')(session);
 
@@ -68,7 +68,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(cookieParser());
 app.use(session({
-  store: new MongoStore({db: 'blurp', mongoose_connection: mongoose.connection}),
+  store: new MongoStore({db: 'blrp', mongoose_connection: mongoose.connection}),
   secret: process.env.SESSION_SECRET || 'keyboard cat'
 }));
 app.use(passport.initialize());
@@ -77,7 +77,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // auth middleware
 app.get('/auth/google', passport.authenticate('google', {
-  scope: ['https://www.googleapis.com/auth/plus.login', 'email']
+  scope: [
+    'https://www.googleapis.com/auth/plus.login', 'profile']
 }));
 
 app.get('/auth/google/callback',
@@ -92,11 +93,11 @@ app.get('/logout', function(req, res){
 // route setup
 var index = require('./routes/index');
 var home = require('./routes/home');
-var blurpRequest = require('./routes/blurpRequest');
+var blrprequest = require('./routes/blrprequest');
 
 app.use('/', index);
 app.use('/home', home);
-app.use('/blurpRequest', blurpRequest);
+app.use('/blrprequest', blrprequest);
 
 /// catch 404 and forwarding to error handler
 app.use(function(req, res, next) {

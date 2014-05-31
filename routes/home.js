@@ -6,34 +6,44 @@ var amqp = require('amqp');
 var auth = require('../lib/auth');
 var Q = require('q');
 
-var BlurpRequest = require('../lib/blurpRequest');
+var BlrpRequest = require('../lib/blrprequest');
 
-/* GET user home */
-router.get('/', auth.isAuthenticated, getBlurps, getFriends, function(req, res) {
-    res.render('home', {
-      user : req.user,
-      blurps : req.blurps || [],
-      blurpReqs : req.blurpReqs || [],
-    });
-});
-
-function getBlurps(req, res, next) {
+function getBlrps(req, res, next) {
   Q.all(
-    [BlurpRequest.allRequestsByUser(req.user),
-     BlurpRequest.allRequestsForUser(req.user)]
+    [BlrpRequest.allRequestsByUser(req.user),
+     BlrpRequest.allRequestsForUser(req.user)]
   )
   .then(function (reqs) {
-    req.blurpReqs = reqs[0];
-    req.blurps = reqs[1];
+    req.blrpReqs = reqs[0];
+    req.blrps = reqs[1];
     next();
+  }, function (err) {
+    next(err);
   });
 }
 
 function getFriends(req, res, next) {
-  User.populateFriends(req.user, function gotFriends(err, friends) {
-    req.user.friends = friends || [];
-    next();
+  User.getFriends(req.user, function gotFriends(err, friends) {
+    if (err) {
+      next(err);
+    } else {
+      req.user.friends = friends || [];
+      next();
+    }
   });
 }
+
+router.use(auth.isAuthenticated);
+router.use(getBlrps);
+router.use(getFriends);
+
+/* GET user home */
+router.get('/', function(req, res) {
+    res.render('home', {
+      user : req.user,
+      blrps : req.blrps || [],
+      blrpReqs : req.blrpReqs || [],
+    });
+});
 
 module.exports = router;
