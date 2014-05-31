@@ -68,7 +68,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(cookieParser());
 app.use(session({
-  store: new MongoStore({db: 'blrp', mongoose_connection: mongoose.connection}),
+  store: new MongoStore({mongoose_connection: mongoose.connection}),
   secret: process.env.SESSION_SECRET || 'keyboard cat'
 }));
 app.use(passport.initialize());

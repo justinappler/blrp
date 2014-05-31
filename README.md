@@ -1,4 +1,4 @@
-Blurp
+Blrp
 =====================================
 This repository contains the backend for Blrp.me, an
 application for communicating simple events with
