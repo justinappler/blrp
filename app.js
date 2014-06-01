@@ -86,7 +86,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 // auth middleware
 app.get('/auth/google', passport.authenticate('google', {
   accessType: 'offline',
-  approvalPrompt: 'force',
   scope: [
     'https://www.googleapis.com/auth/plus.login', 'profile']
 }));
