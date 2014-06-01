@@ -8,7 +8,7 @@ script(type='text/javascript').
         data: authResult
       })
        .done(function(msg) {
-          if (authResult['status']['method'] == 'PROMPT') {
+          if (authResult['status']['method'] != 'AUTO') {
             document.location = '/auth/google';
           }
         });
