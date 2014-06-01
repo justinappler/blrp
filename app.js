@@ -15,6 +15,7 @@ mongoose.connect(mongoUri);
 var MongoStore = require('connect-mongo')(session);
 
 var User = require('./lib/user');
+var Google = require('./lib/googleapi');
 
 var passport = require('passport');
 var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
@@ -27,7 +28,14 @@ passport.serializeUser(function(user, done) {
 
 passport.deserializeUser(function(id, done) {
   User.findById(id, function(err, user) {
-    done(err, user);
+    if (User.isTokenExpired(user)) {
+      console.log('Expired Token');
+      Google.refreshAccessToken(user, function (err, user) {
+        done(err, user);
+      });
+    } else {
+      done(err, user);
+    }
   });
 });
 
@@ -77,6 +85,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // auth middleware
 app.get('/auth/google', passport.authenticate('google', {
+  accessType: 'offline',
   scope: [
     'https://www.googleapis.com/auth/plus.login', 'profile']
 }));
