@@ -15,7 +15,6 @@ mongoose.connect(mongoUri);
 var MongoStore = require('connect-mongo')(session);
 
 var User = require('./lib/user');
-var Google = require('./lib/googleapi');
 
 var passport = require('passport');
 var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
@@ -28,14 +27,7 @@ passport.serializeUser(function(user, done) {
 
 passport.deserializeUser(function(id, done) {
   User.findById(id, function(err, user) {
-    if (User.isTokenExpired(user)) {
-      console.log('Expired Token');
-      Google.refreshAccessToken(user, function (err, user) {
-        done(err, user);
-      });
-    } else {
-      done(err, user);
-    }
+    done(err, user);
   });
 });
 
@@ -46,7 +38,6 @@ passport.use(new GoogleStrategy({
   },
   function(accessToken, refreshToken, profile, done) {
     profile.accessToken = accessToken;
-    profile.refreshToken = refreshToken;
     User.findOrCreate(profile, function(err, user) {
        done(err, user);
     });
@@ -85,7 +76,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // auth middleware
 app.get('/auth/google', passport.authenticate('google', {
-  accessType: 'offline',
   scope: [
     'https://www.googleapis.com/auth/plus.login', 'profile']
 }));
@@ -103,10 +93,12 @@ app.get('/logout', function(req, res){
 var index = require('./routes/index');
 var home = require('./routes/home');
 var blrprequest = require('./routes/blrprequest');
+var user = require('./routes/user');
 
 app.use('/', index);
 app.use('/home', home);
 app.use('/blrprequest', blrprequest);
+app.use('/user', user);
 
 /// catch 404 and forwarding to error handler
 app.use(function(req, res, next) {
