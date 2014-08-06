@@ -53,9 +53,9 @@ app.use(logger('dev'));
 
 // force ssl
 if (app.get('env') === 'production') {
-  app.use(function forceSSL(req, res, next) {
-      if (req.protocol != 'https') {
-        res.redirect('https://' + req.host + req.url);
+  app.use(function forceInsecure(req, res, next) {
+      if (req.protocol == 'https') {
+        res.redirect('http://' + req.host + req.url);
       } else {
         next();
       }
